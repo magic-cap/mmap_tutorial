@@ -5,3 +5,10 @@ Could mmap be a better way?
 
 # what crate?
 A quick search turned up [[https://github.com/RazrFalcon/memmap2-rs][memmap2]], let's try that one?
+
+# what do we need?
+OS support
+- [X] linux
+- [X] mac
+- [X] windows
+all three are tested in memmap2 github actions

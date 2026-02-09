@@ -5,4 +5,6 @@ edition = "2024"
 
 [dependencies]
 memmap2 = "0.9.9"
+tempdir = "0.3.7"
+tempfile = "3.25.0"
 thiserror = "2.0.18"

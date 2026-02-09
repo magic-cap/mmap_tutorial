@@ -1,16 +1,24 @@
 use std::fs::File;
-use std::io::Read;
+use std::{fs::OpenOptions, io::Read};
+use std::path::PathBuf;
+use tempfile;
 
-use memmap2::Mmap;
+use memmap2::{Mmap, MmapMut, MmapOptions};
 use thiserror::Error;
 
 fn main() -> Result<(), MmapError> {
-    let mut file = File::open("README.org")?;
+    let mut in_file = File::open("README.org")?;
     let mut contents = Vec::new();
-    file.read_to_end(&mut contents)?;
-    let mmap = unsafe { Mmap::map(&file)? };
-    assert_eq!(&contents[..], &mmap[..]);
-    println!("Hello, world!");
+    in_file.read_to_end(&mut contents)?;
+    let mmap_in = unsafe { Mmap::map(&in_file)? };
+    let temp_dir = tempfile::tempdir()?;
+    let out_path = temp_dir.path().join("outfile");
+    let out_file = OpenOptions::new().write(true).create(true).open(out_path)?;
+    out_file.set_len(mmap_in.len() as u64)?;
+    let mut mmap_out = unsafe { MmapOptions::new().map_mut(&out_file)? };
+    mmap_out[..].copy_from_slice(&mmap_in[..]);
+    mmap_out.flush()?;
+    println!("mmap read into memory and mmap write out");
     Ok(())
 }
 
