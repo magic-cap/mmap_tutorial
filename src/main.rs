@@ -13,8 +13,10 @@ fn main() -> Result<(), MmapError> {
     let mmap_in = unsafe { Mmap::map(&in_file)? };
     let temp_dir = tempfile::tempdir()?;
     let out_path = temp_dir.path().join("outfile");
-    let out_file = OpenOptions::new().write(true).create(true).open(out_path)?;
+    // for whatever reason, must have read even if only writing!
+    let out_file = OpenOptions::new().write(true).read(true).create(true).open(out_path)?;
     out_file.set_len(mmap_in.len() as u64)?;
+    // println!("gonna write to {:?}",out_file);
     let mut mmap_out = unsafe { MmapOptions::new().map_mut(&out_file)? };
     mmap_out[..].copy_from_slice(&mmap_in[..]);
     mmap_out.flush()?;
