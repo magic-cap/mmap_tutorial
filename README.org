@@ -1,0 +1,7 @@
+# mmap tutorial
+We've been doing manual block handling with explicit read,encrypt,write so we can work with files larger than system memory.
+
+Could mmap be a better way?
+
+# what crate?
+A quick search turned up [[https://github.com/RazrFalcon/memmap2-rs][memmap2]], let's try that one?
